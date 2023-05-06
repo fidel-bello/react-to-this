@@ -1,18 +1,30 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Text, Group, Button, rem } from "@mantine/core";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
 import { IconCloudUpload, IconX, IconDownload } from "@tabler/icons-react";
 import useStyles from "./styles";
+import useGlobalStore from "../../store/globalStore";
 
 const DropzoneButton: React.FC = (): JSX.Element => {
-
   const { classes, theme } = useStyles();
   const openRef = useRef<() => void>(null);
+
+  const { next } = useGlobalStore();
+  const [file, setFile] = useState<File | null>(null);
+
+  const handleDrop = (file: File[]) => {
+    setFile(file[0]);
+  };
+
+  if (file) {
+    next();
+  }
+
   return (
     <div className={classes.wrapper}>
       <Dropzone
         openRef={openRef}
-        onDrop={() => {}}
+        onDrop={handleDrop}
         className={classes.dropzone}
         radius="md"
         accept={[MIME_TYPES.jpeg, MIME_TYPES.png]}
@@ -49,8 +61,8 @@ const DropzoneButton: React.FC = (): JSX.Element => {
             <Dropzone.Idle>Upload photo</Dropzone.Idle>
           </Text>
           <Text ta="center" fz="sm" mt="xs" c="dimmed">
-            Drag&apos;n&apos;drop files here to upload. Accepts only{" "}
-            <i>.png</i> and <i>.jpeg</i> files that are less than 30mb in size.
+            Drag&apos;n&apos;drop files here to upload. Accepts only <i>.png</i>{" "}
+            and <i>.jpeg</i> files that are less than 30mb in size.
           </Text>
         </div>
       </Dropzone>

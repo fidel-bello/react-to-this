@@ -1,15 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import { Stepper, Button, Group, rem } from "@mantine/core";
 import UploadImage from "./UploadImage/UploadImage";
 import ImageFilter from "./ImageFilter";
 import RenderImage from "./RenderImage";
 import DownloadImage from "./Downloadmage";
+import useGlobalStore from "../store/globalStore";
 
 const Header: React.FC = (): JSX.Element => {
-  const [active, setActive] = useState(0);
-
-  const next = () => setActive((curr) => (curr < 3 ? curr + 1 : curr));
-  const prev = () => setActive((curr) => (curr > 0 ? curr - 1 : curr));
+  const { active, setActive, next, prev } = useGlobalStore();
 
   return (
     <>

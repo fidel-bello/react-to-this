@@ -11,9 +11,9 @@ const Header: React.FC = (): JSX.Element => {
 
   return (
     <>
-      <Stepper active={active} onStepClick={setActive} breakpoint="sm" >
+      <Stepper active={active} onStepClick={setActive} breakpoint="sm">
         <Stepper.Step label="First step" description="Add an Image">
-         <UploadImage />
+          <UploadImage />
         </Stepper.Step>
         <Stepper.Step label="Second step" description="Verify email">
           <ImageFilter />

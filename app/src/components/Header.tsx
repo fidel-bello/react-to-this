@@ -1,19 +1,19 @@
 import React, { useState } from "react";
-import { Stepper, Button, Group } from "@mantine/core";
-import UploadImage from "./UploadImage";
+import { Stepper, Button, Group, rem } from "@mantine/core";
+import UploadImage from "./UploadImage/UploadImage";
 import ImageFilter from "./ImageFilter";
 import RenderImage from "./RenderImage";
 import DownloadImage from "./Downloadmage";
 
 const Header: React.FC = (): JSX.Element => {
-  const [active, setActive] = useState(1);
+  const [active, setActive] = useState(0);
 
   const next = () => setActive((curr) => (curr < 3 ? curr + 1 : curr));
   const prev = () => setActive((curr) => (curr > 0 ? curr - 1 : curr));
 
   return (
     <>
-      <Stepper active={active} onStepClick={setActive} breakpoint="sm">
+      <Stepper active={active} onStepClick={setActive} breakpoint="sm" >
         <Stepper.Step label="First step" description="Add an Image">
          <UploadImage />
         </Stepper.Step>
@@ -27,7 +27,7 @@ const Header: React.FC = (): JSX.Element => {
           <DownloadImage />
         </Stepper.Completed>
       </Stepper>
-      <Group position="center" mt="xl">
+      <Group position="center" mt={rem(50)}>
         <Button variant="default" onClick={prev}>
           Back
         </Button>

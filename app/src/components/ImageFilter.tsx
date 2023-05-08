@@ -3,7 +3,7 @@ import { Select, Center } from "@mantine/core";
 import useGlobalStore from "../store/globalStore";
 
 const data = [
-  { value: "hop", label: "Hop" },
+  { value: "Hop", label: "Hop" },
   { value: "hopper", label: "Hopper"}
 ];
 

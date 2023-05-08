@@ -17,13 +17,13 @@ const Header: React.FC = (): JSX.Element => {
         <Stepper.Step label="First step" description="Add an Image">
           <UploadImage />
         </Stepper.Step>
-        <Stepper.Step label="Second step" description="Verify Image">
+        <Stepper.Step label="Second step" description="Preview Image">
           <RenderImage />
         </Stepper.Step>
-        <Stepper.Step label="Third step" description="Verify Filter">
+        <Stepper.Step label="Third step" description="Pick a Filter">
           <ImageFilter />
         </Stepper.Step>
-        <Stepper.Step label="Fourth step" description="Verify Image">
+        <Stepper.Step label="Fourth step" description="Preview Animated Filter">
           <RenderFilter />
         </Stepper.Step>
         <Stepper.Completed>

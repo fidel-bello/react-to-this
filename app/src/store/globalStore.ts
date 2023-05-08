@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 
 interface GlobalStore {
+  CANVAS_WIDTH: number;
+  CANVAS_HEIGHT: number;
   active: number;
   file: File | null;
   imageUrl: string | null;
@@ -11,11 +13,13 @@ interface GlobalStore {
   setActive: (value: number) => void;
   setFile: (file: File) => void;
   setImageUrl: (imageUrl: string | null) => void;
-  setValue: (value: string | null ) => void;
+  setValue: (value: string | null) => void;
   reset: () => void;
 }
 
 const initialState = {
+  CANVAS_WIDTH: 112,
+  CANVAS_HEIGHT: 112,
   active: 0,
   selectValue: null,
   file: null,
@@ -40,7 +44,7 @@ const useGlobalStore = create<GlobalStore>()(
           set(() => ({ imageUrl: imageUrl })),
         setActive: (value: number) => set(() => ({ active: value })),
         setValue: (value: string | null) => set(() => ({ selectValue: value })),
-        reset: () => set(initialState)
+        reset: () => set(initialState),
       }),
 
       {

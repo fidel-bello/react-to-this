@@ -4,7 +4,8 @@ import useGlobalStore from "../store/globalStore";
 
 const data = [
   { value: "Hop", label: "Hop" },
-  { value: "hopper", label: "Hopper"}
+  { value: "Hopper", label: "Hopper"},
+  { value: "Overheat", label: "Overheat" }
 ];
 
 const ImageFilter: React.FC = (): JSX.Element => {

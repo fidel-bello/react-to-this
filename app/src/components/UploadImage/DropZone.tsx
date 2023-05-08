@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { Text, Group, Button, rem } from "@mantine/core";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
 import { IconCloudUpload, IconX, IconDownload } from "@tabler/icons-react";
@@ -6,20 +6,15 @@ import useStyles from "./styles";
 import useGlobalStore from "../../store/globalStore";
 
 const DropzoneButton: React.FC = (): JSX.Element => {
+  const { setFile, setImageUrl } = useGlobalStore();
   const { classes, theme } = useStyles();
   const openRef = useRef<() => void>(null);
 
-  const { next } = useGlobalStore();
-  const [file, setFile] = useState<File | null>(null);
-
   const handleDrop = (file: File[]) => {
     setFile(file[0]);
+    const imageUrl = URL.createObjectURL(file[0]);
+    setImageUrl(imageUrl);
   };
-
-  if (file) {
-    next();
-  }
-
   return (
     <div className={classes.wrapper}>
       <Dropzone

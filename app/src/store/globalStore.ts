@@ -5,16 +5,19 @@ interface GlobalStore {
   active: number;
   file: File | null;
   imageUrl: string | null;
+  selectValue: string | null;
   next: () => void;
   prev: () => void;
   setActive: (value: number) => void;
   setFile: (file: File) => void;
   setImageUrl: (imageUrl: string | null) => void;
+  setValue: (value: string | null ) => void;
   reset: () => void;
 }
 
 const initialState = {
   active: 0,
+  selectValue: null,
   file: null,
   imageUrl: null,
 };
@@ -35,7 +38,8 @@ const useGlobalStore = create<GlobalStore>()(
         setFile: (file: File) => set(() => ({ file: file })),
         setImageUrl: (imageUrl: string | null) =>
           set(() => ({ imageUrl: imageUrl })),
-        setActive: (value) => set(() => ({ active: value })),
+        setActive: (value: number) => set(() => ({ active: value })),
+        setValue: (value: string | null) => set(() => ({ selectValue: value })),
         reset: () => set(initialState)
       }),
 

@@ -6,6 +6,7 @@ import RenderImage from "./RenderImage";
 import DownloadImage from "./Downloadmage";
 import useGlobalStore from "../store/globalStore";
 import ButtonGroup from "./Buttons/ButtonGroup";
+import RenderFilter from "./RenderFilter";
 
 const Header: React.FC = (): JSX.Element => {
   const { active, setActive } = useGlobalStore();
@@ -23,7 +24,7 @@ const Header: React.FC = (): JSX.Element => {
           <ImageFilter />
         </Stepper.Step>
         <Stepper.Step label="Fourth step" description="Verify Image">
-          <div>final Image</div>
+          <RenderFilter />
         </Stepper.Step>
         <Stepper.Completed>
           <DownloadImage />

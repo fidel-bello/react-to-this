@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
-
 interface GlobalStore {
   CANVAS_WIDTH: number;
   CANVAS_HEIGHT: number;

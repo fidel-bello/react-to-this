@@ -6,10 +6,13 @@ import useStyles from "./styles";
 import useGlobalStore from "../../store/globalStore";
 
 const DropzoneButton: React.FC = (): JSX.Element => {
-  const { setFile, setImageUrl } = useGlobalStore();
+  const { file, setFile, setImageUrl, setActive } = useGlobalStore();
   const { classes, theme } = useStyles();
   const openRef = useRef<() => void>(null);
 
+  if (file) {
+    setActive(2 - 1);
+  }
   const handleDrop = (file: File[]) => {
     setFile(file[0]);
     const imageUrl = URL.createObjectURL(file[0]);

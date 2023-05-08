@@ -26,7 +26,7 @@ const useGlobalStore = create<GlobalStore>()(
         ...initialState,
         next: () =>
           set((state) => ({
-            active: state.active < 3 ? state.active + 1 : state.active,
+            active: state.active < 4 ? state.active + 1 : state.active,
           })),
         prev: () =>
           set((state) => ({

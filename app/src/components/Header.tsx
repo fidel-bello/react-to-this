@@ -1,13 +1,14 @@
 import React from "react";
-import { Stepper, Button, Group, rem } from "@mantine/core";
+import { Stepper } from "@mantine/core";
 import UploadImage from "./UploadImage/UploadImage";
 import ImageFilter from "./ImageFilter";
 import RenderImage from "./RenderImage";
 import DownloadImage from "./Downloadmage";
 import useGlobalStore from "../store/globalStore";
+import ButtonGroup from "./Buttons/ButtonGroup";
 
 const Header: React.FC = (): JSX.Element => {
-  const { active, setActive, next, prev } = useGlobalStore();
+  const { active, setActive } = useGlobalStore();
 
   return (
     <>
@@ -18,19 +19,17 @@ const Header: React.FC = (): JSX.Element => {
         <Stepper.Step label="Second step" description="Verify Image">
           <RenderImage />
         </Stepper.Step>
-        <Stepper.Step label="Final step" description="Get full access">
+        <Stepper.Step label="Third step" description="Verify Filter">
           <ImageFilter />
+        </Stepper.Step>
+        <Stepper.Step label="Fourth step" description="Verify Image">
+          <div>final Image</div>
         </Stepper.Step>
         <Stepper.Completed>
           <DownloadImage />
         </Stepper.Completed>
       </Stepper>
-      <Group position="center" mt={rem(50)}>
-        <Button variant="default" onClick={prev}>
-          Back
-        </Button>
-        <Button onClick={next}>Next step</Button>
-      </Group>
+      <ButtonGroup />
     </>
   );
 };

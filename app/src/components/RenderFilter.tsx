@@ -1,13 +1,62 @@
-import React, { useRef, useEffect } from "react";
-import { Alert, Center } from "@mantine/core";
+import React, { useRef, useEffect, useState } from "react";
+import { Alert, Button, Center } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons-react";
 import { filters } from "../helpers/filters";
 import useGlobalStore from "../store/globalStore";
+import GIF from "gif.js";
 
-const RenderFilter: React.FC = (): JSX.Element => {
+
+const gif = new GIF({
+  workers: 5,
+  quality: 10,
+  width: 112,
+  height: 112,
+});
+
+const RenderFilter: React.FC = (): JSX.Element | null => {
   const { selectValue, imageUrl, CANVAS_HEIGHT, CANVAS_WIDTH } =
     useGlobalStore();
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [creatingGif, setCreatingGif] = useState<boolean>(false);
+
+
+  const image = new Image();
+  image.src = imageUrl as string;
+
+  const setTexture = (gl: WebGLRenderingContext, program: WebGLProgram) => {
+    image.onload = () => {
+      const texture = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.RGBA,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        image
+      );
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.uniform1i(gl.getUniformLocation(program, "emote"), 0);
+
+      let pixels = new Uint8ClampedArray(4 * CANVAS_WIDTH * CANVAS_HEIGHT);
+      gl.readPixels(
+        0,
+        0,
+        CANVAS_WIDTH,
+        CANVAS_HEIGHT,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        pixels
+      );
+    };
+
+    image.onerror = () => {
+      console.error("Error loading image:", imageUrl);
+    };
+  };
 
   const render = (time: number) => {
     if (selectValue && imageUrl) {
@@ -15,7 +64,7 @@ const RenderFilter: React.FC = (): JSX.Element => {
       const gl = canvas.getContext("webgl");
       if (!gl) {
         console.error("Unable to initialize WebGL.");
-        return;
+        return null;
       }
 
       const filter = filters[selectValue];
@@ -28,7 +77,7 @@ const RenderFilter: React.FC = (): JSX.Element => {
           "An error occurred compiling the vertex shader.",
           gl.getShaderInfoLog(vertexShader)
         );
-        return;
+        return null;
       }
 
       const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER) as WebGLShader;
@@ -39,7 +88,7 @@ const RenderFilter: React.FC = (): JSX.Element => {
           "An error occurred compiling the fragment shader.",
           gl.getShaderInfoLog(fragmentShader)
         );
-        return;
+        return null;
       }
 
       const program = gl.createProgram() as WebGLProgram;
@@ -51,10 +100,12 @@ const RenderFilter: React.FC = (): JSX.Element => {
           "Unable to initialize the shader program.",
           gl.getProgramInfoLog(program)
         );
-        return;
+        return null;
       }
 
       gl.useProgram(program);
+
+      setTexture(gl, program);
 
       // Set up vertex data
       const vertexData = new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]);
@@ -75,37 +126,6 @@ const RenderFilter: React.FC = (): JSX.Element => {
         0
       );
 
-      // Set up texture
-      const image = new Image();
-      image.onload = () => {
-        const texture = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.texImage2D(
-          gl.TEXTURE_2D,
-          0,
-          gl.RGBA,
-          gl.RGBA,
-          gl.UNSIGNED_BYTE,
-          image
-        );
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        gl.uniform1i(gl.getUniformLocation(program, "emote"), 0);
-      };
-
-      image.onerror = () => {
-        console.error("Error loading image:", imageUrl);
-      };
-
-      image.src = imageUrl;
-
-      // Set up uniforms
-      gl.uniform2f(
-        gl.getUniformLocation(program, "resolution"),
-        CANVAS_WIDTH,
-        CANVAS_HEIGHT
-      );
       gl.uniform1f(gl.getUniformLocation(program, "time"), time / 1000);
       for (const [paramName, paramValue] of Object.entries(
         filter.params || {}
@@ -115,28 +135,91 @@ const RenderFilter: React.FC = (): JSX.Element => {
           paramValue.init
         );
       }
-
       // Render
       gl.viewport(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-    }
+        const fps = 30;
+        const dt = 1.0 / fps;
+        let t = 0.0;
+        let pixels = new Uint8ClampedArray(4 * CANVAS_WIDTH * CANVAS_HEIGHT);
+        gl.readPixels(
+          0,
+          0,
+          CANVAS_WIDTH,
+          CANVAS_HEIGHT,
+          gl.RGBA,
+          gl.UNSIGNED_BYTE,
+          pixels
+        );
+        // Flip the image vertically
+        {
+          const center = Math.floor(CANVAS_HEIGHT / 2);
+          for (let y = 0; y < center; ++y) {
+            const row = 4 * CANVAS_WIDTH;
+            for (let x = 0; x < row; ++x) {
+              const ai = y * 4 * CANVAS_WIDTH + x;
+              const bi = (CANVAS_HEIGHT - y - 1) * 4 * CANVAS_WIDTH + x;
+              const a = pixels[ai];
+              const b = pixels[bi];
+              pixels[ai] = b;
+              pixels[bi] = a;
+            }
+          }
+        }
+
+        gif.addFrame(new ImageData(pixels, CANVAS_WIDTH, CANVAS_HEIGHT), {
+          delay: dt * 1000,
+          dispose: 2,
+        });
+
+        t += dt;
+      }
+    
+
     requestAnimationFrame(render);
   };
+
+
+
+
   useEffect(() => {
+   
+
     requestAnimationFrame(render);
-  }, [selectValue, imageUrl]);
+  }, []);
+
+  const handleGif = () => {
+    setCreatingGif(true);
+    if(creatingGif){
+      gif.on("finished", (blob) => {
+        const url = URL.createObjectURL(blob);
+        console.log(url);  
+        // renderPreview.style.display = "block";
+        // renderDownload.href = renderPreview.src;
+        // renderDownload.download = filename;
+        // renderDownload.style.display = "block";
+        // renderSpinner.style.display = "none";
+      });
+      setCreatingGif(false);
+    }
+  };
+
+ 
 
   return (
     <>
       {selectValue ? (
-        <canvas
-          ref={canvasRef}
-          style={{ border: "2px solid black" }}
-          height={CANVAS_HEIGHT}
-          width={CANVAS_WIDTH}
-        />
+        <Center>
+          <canvas
+            ref={canvasRef}
+            style={{ border: "2px solid black" }}
+            height={CANVAS_HEIGHT}
+            width={CANVAS_WIDTH}
+          />
+          <Button onClick={handleGif}>Create Gif</Button>
+        </Center>
       ) : (
         <Center>
           <Alert

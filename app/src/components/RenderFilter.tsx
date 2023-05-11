@@ -1,25 +1,22 @@
 import React, { useRef, useEffect, useState } from "react";
-import { Alert, Button, Center } from "@mantine/core";
-import { IconAlertCircle } from "@tabler/icons-react";
+import { ActionIcon, Alert, Button, Center, Flex, Tooltip, rem } from "@mantine/core";
+import { IconAlertCircle, IconArrowBackUp } from "@tabler/icons-react";
 import { filters } from "../helpers/filters";
 import useGlobalStore from "../store/globalStore";
 import GIF from "gif.js";
 
-
-const gif = new GIF({
-  workers: 5,
-  quality: 10,
-  width: 112,
-  height: 112,
-});
-
 const RenderFilter: React.FC = (): JSX.Element | null => {
-  const { selectValue, imageUrl, CANVAS_HEIGHT, CANVAS_WIDTH } =
+  const { selectValue, imageUrl, CANVAS_HEIGHT, CANVAS_WIDTH, reset } =
     useGlobalStore();
-
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [creatingGif, setCreatingGif] = useState<boolean>(false);
+  const [creating, setCreating] = useState<boolean>(false);
 
+  const gif = new GIF({
+    workers: 1,
+    width: CANVAS_WIDTH,
+    height: CANVAS_WIDTH,
+    quality: 10,
+  });
 
   const image = new Image();
   image.src = imageUrl as string;
@@ -40,17 +37,6 @@ const RenderFilter: React.FC = (): JSX.Element | null => {
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
       gl.uniform1i(gl.getUniformLocation(program, "emote"), 0);
-
-      let pixels = new Uint8ClampedArray(4 * CANVAS_WIDTH * CANVAS_HEIGHT);
-      gl.readPixels(
-        0,
-        0,
-        CANVAS_WIDTH,
-        CANVAS_HEIGHT,
-        gl.RGBA,
-        gl.UNSIGNED_BYTE,
-        pixels
-      );
     };
 
     image.onerror = () => {
@@ -140,79 +126,88 @@ const RenderFilter: React.FC = (): JSX.Element | null => {
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-        const fps = 30;
-        const dt = 1.0 / fps;
-        let pixels = new Uint8ClampedArray(4 * CANVAS_WIDTH * CANVAS_HEIGHT);
-        gl.readPixels(
-          0,
-          0,
-          CANVAS_WIDTH,
-          CANVAS_HEIGHT,
-          gl.RGBA,
-          gl.UNSIGNED_BYTE,
-          pixels
-        );
-        // Flip the image vertically
-        {
-          const center = Math.floor(CANVAS_HEIGHT / 2);
-          for (let y = 0; y < center; ++y) {
-            const row = 4 * CANVAS_WIDTH;
-            for (let x = 0; x < row; ++x) {
-              const ai = y * 4 * CANVAS_WIDTH + x;
-              const bi = (CANVAS_HEIGHT - y - 1) * 4 * CANVAS_WIDTH + x;
-              const a = pixels[ai];
-              const b = pixels[bi];
-              pixels[ai] = b;
-              pixels[bi] = a;
-            }
+
+      const fps = 60;
+      const dt = 1.0 / fps;
+
+      let pixels = new Uint8ClampedArray(4 * CANVAS_WIDTH * CANVAS_HEIGHT);
+      gl.readPixels(
+        0,
+        0,
+        CANVAS_WIDTH,
+        CANVAS_HEIGHT,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        pixels
+      );
+      // Flip the image vertically
+      {
+        const center = Math.floor(CANVAS_HEIGHT / 2);
+        for (let y = 0; y < center; ++y) {
+          const row = 4 * CANVAS_WIDTH;
+          for (let x = 0; x < row; ++x) {
+            const ai = y * 4 * CANVAS_WIDTH + x;
+            const bi = (CANVAS_HEIGHT - y - 1) * 4 * CANVAS_WIDTH + x;
+            const a = pixels[ai];
+            const b = pixels[bi];
+            pixels[ai] = b;
+            pixels[bi] = a;
           }
         }
-
         gif.addFrame(new ImageData(pixels, CANVAS_WIDTH, CANVAS_HEIGHT), {
           delay: dt * 1000,
           dispose: 2,
         });
-
-        time += dt;
+  
       }
     
-
+    }
     requestAnimationFrame(render);
   };
 
-
-
-
   useEffect(() => {
-   
-
     requestAnimationFrame(render);
   }, []);
 
-  const handleGif = () => {
-    setCreatingGif(true);
-    if(creatingGif){
-      gif.on("finished", (blob) => {
-        const url = URL.createObjectURL(blob);
-        console.log(url);  
-      });
-      setCreatingGif(false);
-    }
-  };
+  const handleCreateGif = () => {
+    setCreating(true);
 
- 
+    gif.on("finished", (blob: Blob) => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "animation.gif";
+      a.click();
+      URL.revokeObjectURL(url);
+      setCreating(false);
+    });
+    gif.render();
+  
+  };
 
   return (
     <>
       {selectValue ? (
         <Center>
+          <Flex direction="column">
           <canvas
             ref={canvasRef}
             style={{ border: "2px solid black" }}
             height={CANVAS_HEIGHT}
             width={CANVAS_WIDTH}
           />
-          <Button onClick={handleGif}>Create Gif</Button>
+          <Flex mt={rem(10)} sx={{ justifyContent: "space-between"}}>
+            <Tooltip label="Generate gif">
+              <Button onClick={handleCreateGif} loading={creating} disabled={creating}>GIF</Button>
+            </Tooltip>
+            <Tooltip label="Start over">
+            <ActionIcon onClick={reset} size={rem(37.5)}><IconArrowBackUp /></ActionIcon>
+            </Tooltip>
+            
+          </Flex>
+          
+          </Flex>
+         
         </Center>
       ) : (
         <Center>

@@ -142,7 +142,6 @@ const RenderFilter: React.FC = (): JSX.Element | null => {
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
         const fps = 30;
         const dt = 1.0 / fps;
-        let t = 0.0;
         let pixels = new Uint8ClampedArray(4 * CANVAS_WIDTH * CANVAS_HEIGHT);
         gl.readPixels(
           0,
@@ -174,7 +173,7 @@ const RenderFilter: React.FC = (): JSX.Element | null => {
           dispose: 2,
         });
 
-        t += dt;
+        time += dt;
       }
     
 
@@ -196,11 +195,6 @@ const RenderFilter: React.FC = (): JSX.Element | null => {
       gif.on("finished", (blob) => {
         const url = URL.createObjectURL(blob);
         console.log(url);  
-        // renderPreview.style.display = "block";
-        // renderDownload.href = renderPreview.src;
-        // renderDownload.download = filename;
-        // renderDownload.style.display = "block";
-        // renderSpinner.style.display = "none";
       });
       setCreatingGif(false);
     }

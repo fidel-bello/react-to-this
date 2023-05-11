@@ -3,7 +3,6 @@ import { Stepper } from "@mantine/core";
 import UploadImage from "./UploadImage/UploadImage";
 import ImageFilter from "./ImageFilter";
 import RenderImage from "./RenderImage";
-import DownloadImage from "./Downloadmage";
 import useGlobalStore from "../store/globalStore";
 import ButtonGroup from "./Buttons/ButtonGroup";
 import RenderFilter from "./RenderFilter";
@@ -20,14 +19,11 @@ const Header: React.FC = (): JSX.Element => {
         <Stepper.Step label="Second step" description="Preview Image">
           <RenderImage />
         </Stepper.Step>
-        <Stepper.Step label="Third step" description="Pick a Filter">
+        <Stepper.Step label="Third step" description="Pick a Filter & Download Gif">
           <ImageFilter />
         </Stepper.Step>
-        <Stepper.Step label="Fourth step" description="Preview Animated Filter">
-          <RenderFilter />
-        </Stepper.Step>
         <Stepper.Completed>
-          <DownloadImage />
+          <RenderFilter />
         </Stepper.Completed>
       </Stepper>
       <ButtonGroup />

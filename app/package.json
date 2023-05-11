@@ -15,11 +15,13 @@
     "@mantine/dropzone": "^6.0.10",
     "@mantine/hooks": "^6.0.10",
     "@tabler/icons-react": "^2.17.0",
+    "gif.js": "^0.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "zustand": "^4.3.8"
   },
   "devDependencies": {
+    "@types/gif.js": "^0.2.2",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@typescript-eslint/eslint-plugin": "^5.57.1",

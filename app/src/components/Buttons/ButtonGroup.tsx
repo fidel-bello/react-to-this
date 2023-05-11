@@ -4,7 +4,6 @@ import useGlobalStore from "../../store/globalStore";
 
 const ButtonGroup: React.FC = (): JSX.Element => {
   const { prev, file, next } = useGlobalStore();
-
   return (
     <Group position="center" mt={rem(50)}>
       <Button variant="default" onClick={prev}>

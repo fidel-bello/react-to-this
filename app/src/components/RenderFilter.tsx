@@ -127,7 +127,7 @@ const RenderFilter: React.FC = (): JSX.Element | null => {
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
-      const fps = 60;
+      const fps = 30;
       const dt = 1.0 / fps;
 
       let pixels = new Uint8ClampedArray(4 * CANVAS_WIDTH * CANVAS_HEIGHT);
@@ -154,13 +154,13 @@ const RenderFilter: React.FC = (): JSX.Element | null => {
             pixels[bi] = a;
           }
         }
-        gif.addFrame(new ImageData(pixels, CANVAS_WIDTH, CANVAS_HEIGHT), {
-          delay: dt * 1000,
-          dispose: 2,
-        });
-  
       }
-    
+
+      gif.addFrame(new ImageData(pixels, CANVAS_WIDTH, CANVAS_HEIGHT), {
+        delay: dt * 1000,
+        dispose: 2,
+      });
+
     }
     requestAnimationFrame(render);
   };
@@ -181,6 +181,7 @@ const RenderFilter: React.FC = (): JSX.Element | null => {
       URL.revokeObjectURL(url);
       setCreating(false);
     });
+
     gif.render();
   
   };

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 interface GlobalStore {
+  lastStep: boolean;
   CANVAS_WIDTH: number;
   CANVAS_HEIGHT: number;
   active: number;
@@ -17,6 +18,7 @@ interface GlobalStore {
 }
 
 const initialState = {
+  lastStep: false,
   CANVAS_WIDTH: 112,
   CANVAS_HEIGHT: 112,
   active: 0,
@@ -45,7 +47,6 @@ const useGlobalStore = create<GlobalStore>()(
         setValue: (value: string) => set(() => ({ selectValue: value })),
         reset: () => set(initialState),
       }),
-
       {
         name: "global-store",
       }

@@ -6,6 +6,7 @@ import RenderImage from "./RenderImage";
 import useGlobalStore from "../store/globalStore";
 import ButtonGroup from "./Buttons/ButtonGroup";
 import RenderFilter from "./RenderFilter";
+import LastStep from "./Buttons/LastStep";
 
 const Header: React.FC = (): JSX.Element => {
   const { active, setActive } = useGlobalStore();
@@ -26,7 +27,7 @@ const Header: React.FC = (): JSX.Element => {
           <RenderFilter />
         </Stepper.Completed>
       </Stepper>
-      <ButtonGroup />
+      { active === 3 ? <LastStep /> : <ButtonGroup /> }
     </>
   );
 };

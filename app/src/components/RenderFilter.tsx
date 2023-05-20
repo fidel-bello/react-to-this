@@ -11,7 +11,6 @@ const RenderFilter: React.FC = (): JSX.Element | null => {
   const [creating, setCreating] = useState<boolean>(false);
   const framesRef = useRef<ImageData[]>([]);
   const framesCountRef = useRef<number>(0);
-  const startTimeRef = useRef<number>(0);
 
   const gif = new GIF({ workers: 5, width: CANVAS_WIDTH, height: CANVAS_WIDTH, quality: 10 });
   const image = new Image();

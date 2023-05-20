@@ -15,7 +15,7 @@ const RenderFilter: React.FC = (): JSX.Element | null => {
 
   const gif = new GIF({ workers: 5, width: CANVAS_WIDTH, height: CANVAS_WIDTH, quality: 10 });
   const image = new Image();
-  
+
   image.src = imageUrl as string;
 
   const setTexture = (gl: WebGLRenderingContext, program: WebGLProgram) => {
@@ -94,31 +94,30 @@ const RenderFilter: React.FC = (): JSX.Element | null => {
 
       framesCountRef.current += 1;
       const captureInterval = 30;
-
+     
       if (framesCountRef.current % captureInterval === 0) {
         let pixels = new Uint8ClampedArray(4 * CANVAS_WIDTH * CANVAS_HEIGHT);
         gl.readPixels(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
         // Flip the image vertically
         {
-          const center = Math.floor(CANVAS_HEIGHT / 2);
-          for (let y = 0; y < center; ++y) {
-            const row = 4 * CANVAS_WIDTH;
+          const halfHeight = Math.floor(CANVAS_HEIGHT / 2);
+          const row = 4 * CANVAS_WIDTH;
+
+          for (let y = 0; y < halfHeight; ++y) {
             for (let x = 0; x < row; ++x) {
-              const ai = y * 4 * CANVAS_WIDTH + x;
-              const bi = (CANVAS_HEIGHT - y - 1) * 4 * CANVAS_WIDTH + x;
-              const a = pixels[ai];
-              const b = pixels[bi];
-              pixels[ai] = b;
-              pixels[bi] = a;
+              const ai = y * row + x;
+              const bi = (CANVAS_HEIGHT - y - 1) * row + x;
+              const temp = pixels[ai];
+              pixels[ai] = pixels[bi];
+              pixels[bi] = temp;
             }
           }
         }
 
         const frames = new ImageData(pixels, CANVAS_HEIGHT, CANVAS_WIDTH);
         framesRef.current.push(frames);
-        
       }
-      requestAnimationFrame(render)
+      requestAnimationFrame(render);
     }
   };
   useEffect(() => {
@@ -127,12 +126,7 @@ const RenderFilter: React.FC = (): JSX.Element | null => {
 
   const handleCreateGif = () => {
     setCreating(true);
-    const currTime = performance.now();
-    const elapsedTime = currTime - startTimeRef.current;
-    const frameRate = framesCountRef.current / (elapsedTime / 1000);
-    const gifFrameRate = Math.floor(frameRate);
-    const frameDelay = Math.round(1000 / gifFrameRate);
-    
+    const frameDelay = 100;
     gif.on("finished", (blob: Blob) => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");

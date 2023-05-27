@@ -93,9 +93,9 @@ const RenderFilter: React.FC = (): JSX.Element | null => {
 
       framesCountRef.current += 1;
       const captureInterval = 30;
-     
+
       if (framesCountRef.current % captureInterval === 0) {
-        let pixels = new Uint8ClampedArray(4 * CANVAS_WIDTH * CANVAS_HEIGHT);
+        const pixels = new Uint8ClampedArray(4 * CANVAS_WIDTH * CANVAS_HEIGHT);
         gl.readPixels(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
         // Flip the image vertically
         {
@@ -126,6 +126,7 @@ const RenderFilter: React.FC = (): JSX.Element | null => {
   const handleCreateGif = () => {
     setCreating(true);
     const frameDelay = 100;
+
     gif.on("finished", (blob: Blob) => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -140,7 +141,9 @@ const RenderFilter: React.FC = (): JSX.Element | null => {
       gif.addFrame(frame, { delay: frameDelay, dispose: 2 });
     });
 
-    gif.render();
+    setTimeout(() => {
+      gif.render();
+    }, 5000);
   };
 
   return (

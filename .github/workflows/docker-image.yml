@@ -60,7 +60,7 @@ jobs:
       run: |
         kubectl get deployment/${{ secrets.KUBE_DEPLOYMENT_NAME }} -o yaml > deployment.yaml
         sed -i "s|image:.*|image: ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}|" deployment.yaml
-    
+        kubectl apply -f deployment.yaml
     
    
 

@@ -12,7 +12,7 @@ jobs:
 
   build:
 
-    runs-on: cluster
+    runs-on: self-hosted
     env:
       IMAGE_NAME: node-react
       IMAGE_TAG: ${{ github.run_number}}

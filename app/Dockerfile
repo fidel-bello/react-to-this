@@ -14,7 +14,7 @@ COPY . .
 COPY ./app/gif.js /app/dist
 COPY ./app/gif.js.map /app/dist
 COPY ./app/gif.worker.js /app/dist
-COPY ./app/gif.worker.js.map /app//dist
+COPY ./app/gif.worker.js.map /app/dist
 
 # Production stage: Use Nginx to serve the React app
 FROM nginx:alpine

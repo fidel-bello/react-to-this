@@ -1,7 +1,7 @@
 # Build stage: Use Node.js to build the React app
 FROM node:20.3.1-alpine AS build
 
-WORKDIR /test
+WORKDIR /app
 
 # Install app dependencies
 COPY package.json ./
@@ -14,16 +14,16 @@ COPY . .
 # Build the React app
 RUN npm run build
 
-COPY gif.js /test/dist
-COPY gif.js.map /test/dist
-COPY gif.worker.js /test/dist
-COPY gif.worker.js.map /test/dist
+COPY ./app/gif.js /app/dist
+COPY ./app/gif.js.map /app/dist
+COPY ./app/gif.worker.js /app/dist
+COPY ./app/gif.worker.js.map /app//dist
 
 # Production stage: Use Nginx to serve the React app
 FROM nginx:alpine
 
 # Copy the React app from the build stage to the nginx container
-COPY --from=build /test/dist /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html
 
 
 # Expose port 8080

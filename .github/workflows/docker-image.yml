@@ -10,9 +10,9 @@ on:
 
 jobs:
 
-  build-deploy-image:
+  build:
 
-    runs-on: self-hosted
+    runs-on: cluster
     env:
       IMAGE_NAME: node-react
       IMAGE_TAG: ${{ github.run_number}}
@@ -20,6 +20,10 @@ jobs:
     steps:
     - name: Git Checkout
       uses: actions/checkout@v3
+
+    - name: Get Cluster Test
+      run: |
+        kubectl get nodes
 
     # - name: Build the Docker image
     #   run: 

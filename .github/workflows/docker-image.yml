@@ -23,7 +23,7 @@ jobs:
 
     - name: Build the Docker image
       run: 
-        docker build . --file ./app/Dockerfile --tag ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:$IMAGE_TAG  --no-cache
+        docker build . --file ./app/Dockerfile --tag ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:$IMAGE_TAG --build-arg=token=ZGEzNTQ5Y2QyNjAx --no-cache  --no-cache
 
     - name: Login to Docker Hub
       run: | 

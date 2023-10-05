@@ -21,20 +21,20 @@ jobs:
     - name: Git Checkout
       uses: actions/checkout@v3
 
-    - name: Build the Docker image
-      run: 
-        docker build . --file ./app/Dockerfile --tag ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:$IMAGE_TAG --build-arg=token=ZGEzNTQ5Y2QyNjAx --no-cache  --no-cache
+    # - name: Build the Docker image
+    #   run: 
+    #     docker build . --file ./app/Dockerfile --tag ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:$IMAGE_TAG --build-arg=token=ZGEzNTQ5Y2QyNjAx --no-cache  --no-cache
 
-    - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@master
-      continue-on-error: true
-      with:
-        image-ref: 'docker.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}'
-        format: 'table'
-        exit-code: '1'
-        ignore-unfixed: true
-        vuln-type: 'os,library'
-        severity: 'MEDIUM,HIGH,CRITICAL'
+    # - name: Run Trivy vulnerability scanner
+    #   uses: aquasecurity/trivy-action@master
+    #   continue-on-error: true
+    #   with:
+    #     image-ref: 'docker.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}'
+    #     format: 'table'
+    #     exit-code: '1'
+    #     ignore-unfixed: true
+    #     vuln-type: 'os,library'
+    #     severity: 'MEDIUM,HIGH,CRITICAL'
 
     - name: Kubernetes set context
       uses: rinx/setup-k3d@v0.0.2
@@ -50,19 +50,20 @@ jobs:
     #   run:
     #     docker push ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
-    # - name: Deploy to Kubernetes
-    #   run: |
-    #     kubectl get deployment/${{ secrets.KUBE_DEPLOYMENT_NAME }} -o yaml > deployment.yaml
-    #     sed -i "s|image:.*|image: ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}|" deployment.yaml
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl cluster-info
+        # kubectl get deployment/${{ secrets.KUBE_DEPLOYMENT_NAME }} -o yaml > deployment.yaml
+        # sed -i "s|image:.*|image: ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}|" deployment.yaml
       
-    - name: Deploy K8s
-      uses: explorium-ai/deploy-k8s-action@main
-      with:
-        install_local_cluster: true
-        catch_chart_errors: true
-        local_cluster_name: platform-cluster
-        pre_commands: | # Note the pipe. This is a Multiline String
-            kubectl create namespace test
+    # - name: Deploy K8s
+    #   uses: explorium-ai/deploy-k8s-action@main
+    #   with:
+    #     install_local_cluster: true
+    #     catch_chart_errors: true
+    #     local_cluster_name: platform-cluster
+    #     pre_commands: | # Note the pipe. This is a Multiline String
+    #         kubectl create namespace test
     
    
 

@@ -6,13 +6,25 @@ on:
   pull_request:
     branches: [ "main" ]
 
+  workflow_dispatch:
+
 jobs:
 
-  build:
+  build-deploy-image:
 
     runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: node-react
+      IMAGE_TAG: ${{ github.run_number}}
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Git Checkout
+      uses: actions/checkout@v2
+
     - name: Build the Docker image
-      run: docker build . --file ./app/Dockerfile --tag my-image-name:$(date +%s)
+      run: 
+        docker build . --file ./app/Dockerfile --tag ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:$IMAGE_TAG  --no-cache
+
+    - name: Login to Docker Hub
+      run: | 
+        echo ${{ secrets.DOCKER_REPOSITORY_SECRET }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin

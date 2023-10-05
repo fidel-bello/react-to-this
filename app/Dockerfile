@@ -4,8 +4,8 @@ FROM node:20.3.1-alpine AS build
 WORKDIR /app
 
 # Install app dependencies
-COPY package.json ./
-COPY package-lock.json ./
+COPY ./app/package.json ./
+COPY ./app/package-lock.json ./
 RUN npm install
 
 # Copy local files to container

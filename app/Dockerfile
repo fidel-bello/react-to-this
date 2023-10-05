@@ -11,9 +11,6 @@ RUN npm install
 # Copy local files to container
 COPY . .
 
-# Build the React app
-RUN npm run build
-
 COPY ./app/gif.js /app/dist
 COPY ./app/gif.js.map /app/dist
 COPY ./app/gif.worker.js /app/dist

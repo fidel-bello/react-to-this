@@ -4,12 +4,11 @@ FROM node:20.3.1-alpine AS build
 WORKDIR /app
 
 # Install app dependencies
-COPY ./app/package.json ./app
-COPY ./app/package-lock.json ./app
+COPY ./app/package.json .
+COPY ./app/package-lock.json .
 
 RUN npm install
 
-RUN npm run build
 
 # Copy local files to container
 COPY . .
@@ -18,6 +17,9 @@ COPY ./app/gif.js /app/dist
 COPY ./app/gif.js.map /app/dist
 COPY ./app/gif.worker.js /app/dist
 COPY ./app/gif.worker.js.map /app/dist
+
+
+RUN npm run build
 
 # Production stage: Use Nginx to serve the React app
 FROM nginx:alpine

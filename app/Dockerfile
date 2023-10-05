@@ -13,13 +13,12 @@ RUN npm install
 # Copy local files to container
 COPY ./app .
 
+RUN npm run build
+
 COPY ./app/gif.js /app/dist
 COPY ./app/gif.js.map /app/dist
 COPY ./app/gif.worker.js /app/dist
 COPY ./app/gif.worker.js.map /app/dist
-
-
-RUN npm run build
 
 # Production stage: Use Nginx to serve the React app
 FROM nginx:alpine

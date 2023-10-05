@@ -30,6 +30,6 @@ COPY --from=build /test/dist /usr/share/nginx/html
 EXPOSE 8080
 
 # Use a custom nginx configuration file to listen on port 8080
-COPY web/nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./app/web/nginx.conf /etc/nginx/conf.d/default.conf
 
 CMD ["nginx", "-g", "daemon off;"]

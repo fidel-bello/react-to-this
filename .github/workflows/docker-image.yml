@@ -36,6 +36,13 @@ jobs:
         vuln-type: 'os,library'
         severity: 'MEDIUM,HIGH,CRITICAL'
 
+    - name: Kubernetes set context
+      uses: Azure/k8s-set-context@v1
+      with:
+        method: kubeconfig
+        kubeconfig: ${{ secrets.KUBE_CONFIG }}
+
+
     - name: Login to Docker Hub
       run: | 
         echo ${{ secrets.DOCKER_REPOSITORY_SECRET }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
@@ -43,11 +50,12 @@ jobs:
     - name: Push Image to Docker Hub
       run:
         docker push ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl get deployment/${{ secrets.KUBE_DEPLOYMENT_NAME }} -o yaml > deployment.yaml
+        sed -i "s|image:.*|image: ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}|" deployment.yaml
     
-    - name: Kubernetes set context
-      uses: Azure/k8s-set-context@v1
-      with:
-        method: kubeconfig
-        kubeconfig: ${{ secrets.KUBE_CONFIG }}
+   
 
  

@@ -43,5 +43,11 @@ jobs:
     - name: Push Image to Docker Hub
       run:
         docker push ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+    
+    - name: Kubernetes set context
+      uses: Azure/k8s-set-context@v1
+      with:
+        method: kubeconfig
+        kubeconfig: ${{ secrets.KUBE_CONFIG }}
 
  

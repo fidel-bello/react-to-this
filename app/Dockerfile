@@ -11,7 +11,7 @@ RUN npm install
 
 
 # Copy local files to container
-COPY . .
+COPY ./app .
 
 COPY ./app/gif.js /app/dist
 COPY ./app/gif.js.map /app/dist

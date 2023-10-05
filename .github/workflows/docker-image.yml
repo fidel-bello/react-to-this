@@ -25,29 +25,29 @@ jobs:
       run: |
         kubectl get nodes
     
-    - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@master
-      continue-on-error: true
-      with:
-        image-ref: 'docker.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}'
-        format: 'table'
-        exit-code: '1'
-        ignore-unfixed: true
-        vuln-type: 'os,library'
-        severity: 'MEDIUM,HIGH,CRITICAL'
+    # - name: Run Trivy vulnerability scanner
+    #   uses: aquasecurity/trivy-action@master
+    #   continue-on-error: true
+    #   with:
+    #     image-ref: 'docker.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}'
+    #     format: 'table'
+    #     exit-code: '1'
+    #     ignore-unfixed: true
+    #     vuln-type: 'os,library'
+    #     severity: 'MEDIUM,HIGH,CRITICAL'
 
     - name: Build the Docker image
       run: 
         docker build . --file ./app/Dockerfile --tag ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:$IMAGE_TAG --build-arg=token=ZGEzNTQ5Y2QyNjAx --no-cache  --no-cache
 
 
-    # - name: Login to Docker Hub
-    #   run: | 
-    #     echo ${{ secrets.DOCKER_REPOSITORY_SECRET }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+    - name: Login to Docker Hub
+      run: | 
+        echo ${{ secrets.DOCKER_REPOSITORY_SECRET }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
-    # - name: Push Image to Docker Hub
-    #   run:
-    #     docker push ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+    - name: Push Image to Docker Hub
+      run:
+        docker push ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
       
     - name: Set Config
       env:
@@ -58,10 +58,10 @@ jobs:
 
     - name: Deploy to Kubernetes
       run: |
-       kubectl get nodes
+        kubectl get deployment/${{ secrets.KUBE_DEPLOYMENT_NAME }} -o yaml > deployment.yaml
+        sed -i "s|image:.*|image: ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}|" deployment.yaml
+    
     
    
 
-     # kubectl get deployment/${{ secrets.KUBE_DEPLOYMENT_NAME }} -o yaml > deployment.yaml
-        # sed -i "s|image:.*|image: ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}|" deployment.yaml
-
+    

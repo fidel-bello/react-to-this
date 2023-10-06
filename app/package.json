@@ -3,8 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "repository": {
-    "url": "git://github.com:fidel-bello/react-to-this.git"
+  "publishConfig": {
+    "publishConfig": {
+      "@fidel-bello:registry": "https://npm.pkg.github.com"
+    }
   },
   "scripts": {
     "dev": "vite",

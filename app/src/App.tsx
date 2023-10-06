@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { MantineProvider } from "@mantine/core";
+import {  MantineProvider } from "@mantine/core";
 import "./App.css";
 import Header from "./components/Header";
 import useGlobalStore from "./store/globalStore";

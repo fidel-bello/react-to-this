@@ -1,5 +1,8 @@
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
+
+
+
 interface GlobalStore {
   lastStep: boolean;
   CANVAS_WIDTH: number;
@@ -8,6 +11,7 @@ interface GlobalStore {
   file: File | null;
   imageUrl: string | null;
   selectValue: string;
+  url: string
   next: () => void;
   prev: () => void;
   setActive: (value: number) => void;
@@ -25,6 +29,7 @@ const initialState = {
   selectValue: "",
   file: null,
   imageUrl: null,
+  url: "https://github.com/fidel-bello"
 };
 
 const useGlobalStore = create<GlobalStore>()(

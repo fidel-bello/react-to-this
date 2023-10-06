@@ -9,7 +9,12 @@ const data = [
 ];
 
 const ImageFilter: React.FC = (): JSX.Element => {
-    const { selectValue, setValue } = useGlobalStore();
+    const { selectValue, setValue, imageUrl } = useGlobalStore();
+
+    if (!imageUrl) {
+      return <div>You must select an image first</div>;
+    }
+    
   return (
     <Center>
       <Select

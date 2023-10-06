@@ -1,5 +1,5 @@
 import React from "react";
-import { Stepper } from "@mantine/core";
+import { Center, Stepper } from "@mantine/core";
 import UploadImage from "./UploadImage/UploadImage";
 import ImageFilter from "./ImageFilter";
 import RenderImage from "./RenderImage";
@@ -7,9 +7,10 @@ import useGlobalStore from "../store/globalStore";
 import ButtonGroup from "./Buttons/ButtonGroup";
 import RenderFilter from "./RenderFilter";
 import LastStep from "./Buttons/LastStep";
+import GithubLink from "./GithubLink";
 
 const Header: React.FC = (): JSX.Element => {
-  const { active, setActive } = useGlobalStore();
+  const { active, setActive, url } = useGlobalStore();
 
   return (
     <>
@@ -28,6 +29,10 @@ const Header: React.FC = (): JSX.Element => {
         </Stepper.Completed>
       </Stepper>
       { active === 3 ? <LastStep /> : <ButtonGroup /> }
+      <Center mt={50}>
+        <GithubLink url={url} />
+      </Center>
+     
     </>
   );
 };

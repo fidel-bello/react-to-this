@@ -1,8 +1,11 @@
 {
-  "name": "app",
+  "name": "@fidel-bello/react-to-this",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "repository": {
+    "url": "git://github.com:fidel-bello/react-to-this.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

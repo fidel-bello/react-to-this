@@ -21,6 +21,12 @@ const App: React.FC = (): JSX.Element => {
       withNormalizeCSS
       theme={{
         colorScheme: "light",
+        other: {
+          fontFamily: {
+            sans:
+              '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
+          },
+        }
       }}
     >
       <Header />

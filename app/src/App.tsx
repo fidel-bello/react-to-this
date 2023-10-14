@@ -20,7 +20,7 @@ const App: React.FC = (): JSX.Element => {
       withGlobalStyles
       withNormalizeCSS
       theme={{
-        colorScheme: "light",
+        colorScheme: "dark",
         other: {
           fontFamily: {
             sans:

@@ -181,6 +181,71 @@ void main() {
 }
 `,
   },
+  Wiggle: {
+    transparent: 0x00ff00 + "",
+    duration: "1.0",
+    params: {
+      scale: {
+        init: 0.4,
+        min: 0.1,
+        max: 1.0,
+        step: 0.01,
+      },
+      amplitude: {
+        init: 0.08,
+        min: 0.0,
+        max: 0.25,
+        step: 0.005,
+      },
+      frequency: {
+        init: 12.0,
+        min: 1.0,
+        max: 30.0,
+        step: 0.5,
+      },
+    },
+    vertex: `#version 100
+precision mediump float;
+
+attribute vec2 meshPosition;
+uniform float time;
+
+uniform float scale;
+uniform float amplitude;
+uniform float frequency;
+
+varying vec2 uv;
+
+void main() {
+    float wiggleX = sin(time * frequency) * amplitude;
+    float wiggleY = cos(time * frequency * 1.37) * amplitude * 0.7;
+    vec2 offset = vec2(wiggleX, wiggleY);
+
+    gl_Position = vec4(
+        meshPosition * scale + offset,
+        0.0,
+        1.0);
+
+    uv = (meshPosition + vec2(1.0, 1.0)) / 2.0;
+}
+`,
+    fragment: `#version 100
+
+precision mediump float;
+
+uniform vec2 resolution;
+uniform float time;
+
+uniform sampler2D emote;
+
+varying vec2 uv;
+
+void main() {
+    gl_FragColor = texture2D(emote, vec2(uv.x, 1.0 - uv.y));
+    gl_FragColor.w = floor(gl_FragColor.w + 0.5);
+}
+`,
+  },
   Overheat: {
     transparent: 0x00ff00 + "",
     duration: "0.85 / 8.0 * 2.0",

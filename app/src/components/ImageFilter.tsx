@@ -5,6 +5,7 @@ import { useGiphyContext } from "../context/GiphyContext";
 const data = [
   { value: "Hop", label: "Hop" },
   { value: "Hopper", label: "Hopper"},
+  { value: "Wiggle", label: "Wiggle" },
   { value: "Overheat", label: "Overheat" }
 ];
 

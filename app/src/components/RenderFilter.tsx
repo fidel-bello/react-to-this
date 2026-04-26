@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { ActionIcon, Alert, Button, Center, Flex, Tooltip, rem } from "@mantine/core";
 import { IconAlertCircle, IconArrowBackUp } from "@tabler/icons-react";
-import { filters } from "../helpers/filters";
+import { filters, getFilterDurationMs } from "../helpers/filters";
 import { useGiphyContext } from "../context/GiphyContext";
 import GIF from "gif.js";
 
@@ -9,10 +9,10 @@ const RenderFilter: React.FC = (): JSX.Element | null => {
   const { selectValue, imageUrl, CANVAS_HEIGHT, CANVAS_WIDTH, reset } = useGiphyContext();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [creating, setCreating] = useState<boolean>(false);
-  const framesRef = useRef<ImageData[]>([]);
+  const framesRef = useRef<Array<{ frame: ImageData; capturedAt: number }>>([]);
   const framesCountRef = useRef<number>(0);
 
-  const gif = new GIF({ workers: 5, width: CANVAS_WIDTH, height: CANVAS_WIDTH, quality: 10 });
+  const gif = new GIF({ workers: 5, width: CANVAS_WIDTH, height: CANVAS_HEIGHT, quality: 10 });
   const image = new Image();
 
   image.src = imageUrl as string;
@@ -114,7 +114,10 @@ const RenderFilter: React.FC = (): JSX.Element | null => {
         }
 
         const frames = new ImageData(pixels, CANVAS_WIDTH, CANVAS_HEIGHT);
-        framesRef.current.push(frames);
+        framesRef.current.push({
+          frame: frames,
+          capturedAt: performance.now(),
+        });
       }
       requestAnimationFrame(render);
     }
@@ -125,7 +128,8 @@ const RenderFilter: React.FC = (): JSX.Element | null => {
 
   const handleCreateGif = () => {
     setCreating(true);
-    const frameDelay = 100;
+    const filter = filters[selectValue];
+    const fallbackDelay = Math.max(20, getFilterDurationMs(filter));
 
     gif.on("finished", (blob: Blob) => {
       const url = URL.createObjectURL(blob);
@@ -137,8 +141,11 @@ const RenderFilter: React.FC = (): JSX.Element | null => {
       setCreating(false);
     });
 
-    framesRef.current.forEach((frame: ImageData) => {
-      gif.addFrame(frame, { delay: frameDelay, dispose: 2 });
+    framesRef.current.forEach((entry, index) => {
+      const next = framesRef.current[index + 1];
+      const delay = Math.max(20, next ? next.capturedAt - entry.capturedAt : fallbackDelay);
+
+      gif.addFrame(entry.frame, { delay, dispose: 2 });
     });
 
     setTimeout(() => {

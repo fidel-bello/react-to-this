@@ -17,6 +17,21 @@ export interface Filter {
   fragment: string;
 }
 
+export const getFilterDurationMs = (filter: Filter): number => {
+  const params = Object.fromEntries(
+    Object.entries(filter.params || {}).map(([name, value]) => [name, value.init])
+  );
+  const keys = Object.keys(params);
+  const values = Object.values(params);
+
+  try {
+    const durationSeconds = Number(new Function(...keys, `return ${filter.duration};`)(...values));
+    return Number.isFinite(durationSeconds) ? durationSeconds * 1000 : 0;
+  } catch {
+    return 0;
+  }
+};
+
 export const filters: { [name: string]: Filter } = {
   Hop: {
     transparent: 0x00ff00 + "",

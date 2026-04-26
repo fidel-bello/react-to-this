@@ -1,9 +1,9 @@
 import React from "react";
 import { Group, Button, rem, Tooltip } from "@mantine/core";
-import useGlobalStore from "../../store/globalStore";
+import { useGiphyContext } from "../../context/GiphyContext";
 
 const ButtonGroup: React.FC = (): JSX.Element => {
-  const { prev, file, next } = useGlobalStore();
+  const { prev, file, next } = useGiphyContext();
   return (
     <Group position="center" mt={rem(50)}>
       <Button variant="default" onClick={prev}>

@@ -1,18 +1,21 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Text, Group, Button, rem } from "@mantine/core";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
 import { IconCloudUpload, IconX, IconDownload } from "@tabler/icons-react";
 import useStyles from "./styles";
-import useGlobalStore from "../../store/globalStore";
+import { useGiphyContext } from "../../context/GiphyContext";
 
 const DropzoneButton: React.FC = (): JSX.Element => {
-  const { file, setFile, setImageUrl, setActive } = useGlobalStore();
+  const { file, setFile, setImageUrl, setActive } = useGiphyContext();
   const { classes, theme } = useStyles();
   const openRef = useRef<() => void>(null);
 
-  if (file) {
-    setActive(2 - 1);
-  }
+  useEffect(() => {
+    if (file) {
+      setActive(1);
+    }
+  }, [file, setActive]);
+
   const handleDrop = (file: File[]) => {
     setFile(file[0]);
     const imageUrl = URL.createObjectURL(file[0]);

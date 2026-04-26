@@ -1,6 +1,6 @@
 import React from "react";
 import { Select, Center } from "@mantine/core";
-import useGlobalStore from "../store/globalStore";
+import { useGiphyContext } from "../context/GiphyContext";
 
 const data = [
   { value: "Hop", label: "Hop" },
@@ -9,7 +9,7 @@ const data = [
 ];
 
 const ImageFilter: React.FC = (): JSX.Element => {
-    const { selectValue, setValue, imageUrl } = useGlobalStore();
+    const { selectValue, setValue, imageUrl } = useGiphyContext();
 
     if (!imageUrl) {
       return <div>You must select an image first</div>;

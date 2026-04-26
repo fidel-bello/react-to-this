@@ -3,14 +3,14 @@ import { Center, Stepper } from "@mantine/core";
 import UploadImage from "./UploadImage/UploadImage";
 import ImageFilter from "./ImageFilter";
 import RenderImage from "./RenderImage";
-import useGlobalStore from "../store/globalStore";
+import { useGiphyContext } from "../context/GiphyContext";
 import ButtonGroup from "./Buttons/ButtonGroup";
 import RenderFilter from "./RenderFilter";
 import LastStep from "./Buttons/LastStep";
 import GithubLink from "./GithubLink";
 
 const Header: React.FC = (): JSX.Element => {
-  const { active, setActive, url } = useGlobalStore();
+  const { active, setActive, url } = useGiphyContext();
 
   return (
     <>

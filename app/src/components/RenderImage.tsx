@@ -1,9 +1,9 @@
 import React from "react";
 import { Image, Center, Button, Flex } from "@mantine/core";
-import useGlobalStore from "../store/globalStore";
+import { useGiphyContext } from "../context/GiphyContext";
 
 const RenderImage: React.FC = (): JSX.Element => {
-  const { imageUrl, reset } = useGlobalStore();
+  const { imageUrl, reset } = useGiphyContext();
 
   if (!imageUrl) {
     return <div>You must select an image first</div>;

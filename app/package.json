@@ -23,8 +23,7 @@
     "gif.js": "^0.2.0",
     "prettier": "^2.8.8",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "zustand": "^4.3.8"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@types/gif.js": "^0.2.2",

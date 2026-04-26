@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 import {  MantineProvider } from "@mantine/core";
 import "./App.css";
 import Header from "./components/Header";
-import useGlobalStore from "./store/globalStore";
+import { useGiphyContext } from "./context/GiphyContext";
 
 const App: React.FC = (): JSX.Element => {
-  const { reset } = useGlobalStore();
+  const { reset } = useGiphyContext();
 
   useEffect(() => {
     const navigation = performance.getEntriesByType(
@@ -14,7 +14,7 @@ const App: React.FC = (): JSX.Element => {
     if (navigation.type === "reload") {
       reset();
     }
-  }, []);
+  }, [reset]);
   return (
     <MantineProvider
       withGlobalStyles

@@ -2,11 +2,11 @@ import React, { useRef, useEffect, useState } from "react";
 import { ActionIcon, Alert, Button, Center, Flex, Tooltip, rem } from "@mantine/core";
 import { IconAlertCircle, IconArrowBackUp } from "@tabler/icons-react";
 import { filters } from "../helpers/filters";
-import useGlobalStore from "../store/globalStore";
+import { useGiphyContext } from "../context/GiphyContext";
 import GIF from "gif.js";
 
 const RenderFilter: React.FC = (): JSX.Element | null => {
-  const { selectValue, imageUrl, CANVAS_HEIGHT, CANVAS_WIDTH, reset } = useGlobalStore();
+  const { selectValue, imageUrl, CANVAS_HEIGHT, CANVAS_WIDTH, reset } = useGiphyContext();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [creating, setCreating] = useState<boolean>(false);
   const framesRef = useRef<ImageData[]>([]);
@@ -113,7 +113,7 @@ const RenderFilter: React.FC = (): JSX.Element | null => {
           }
         }
 
-        const frames = new ImageData(pixels, CANVAS_HEIGHT, CANVAS_WIDTH);
+        const frames = new ImageData(pixels, CANVAS_WIDTH, CANVAS_HEIGHT);
         framesRef.current.push(frames);
       }
       requestAnimationFrame(render);

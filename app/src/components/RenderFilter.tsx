@@ -130,6 +130,15 @@ const RenderFilter: React.FC = (): JSX.Element | null => {
     setCreating(true);
     const filter = filters[selectValue];
     const fallbackDelay = Math.max(20, getFilterDurationMs(filter));
+    const delays = framesRef.current.map((entry, index) => {
+      const next = framesRef.current[index + 1];
+      if (next) {
+        return Math.max(20, next.capturedAt - entry.capturedAt);
+      }
+
+      const previous = framesRef.current[index - 1];
+      return Math.max(20, previous ? entry.capturedAt - previous.capturedAt : fallbackDelay);
+    });
 
     gif.on("finished", (blob: Blob) => {
       const url = URL.createObjectURL(blob);
@@ -142,11 +151,13 @@ const RenderFilter: React.FC = (): JSX.Element | null => {
     });
 
     framesRef.current.forEach((entry, index) => {
-      const next = framesRef.current[index + 1];
-      const delay = Math.max(20, next ? next.capturedAt - entry.capturedAt : fallbackDelay);
-
-      gif.addFrame(entry.frame, { delay, dispose: 2 });
+      gif.addFrame(entry.frame, { delay: delays[index], dispose: 2 });
     });
+
+    const firstFrame = framesRef.current[0];
+    if (firstFrame) {
+      gif.addFrame(firstFrame.frame, { delay: 20, dispose: 2 });
+    }
 
     setTimeout(() => {
       gif.render();
